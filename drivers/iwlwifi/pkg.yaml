@@ -1,0 +1,23 @@
+name: iwlwifi
+variant: scratch
+shell: /toolchain/bin/bash
+dependencies:
+  - stage: base
+  - image: docker.io/echozio/iwlwifi-modules-pkg:v1.7.0-alpha.0-30-gd9c1540-dirty
+steps:
+  - prepare:
+      - |
+        sed -i 's#$VERSION#{{ .VERSION }}#' /pkg/manifest.yaml
+  - install:
+      - |
+        export KERNELRELEASE=$(find /lib/modules -type d -name "*-talos" -exec basename {} \+)
+
+        mkdir -p /rootfs
+
+        xargs -a /pkg/files/modules.txt -I {} install -D /lib/modules/${KERNELRELEASE}/{} /rootfs/lib/modules/${KERNELRELEASE}/{}
+        depmod -b /rootfs ${KERNELRELEASE} 
+finalize:
+  - from: /rootfs
+    to: /rootfs
+  - from: /pkg/manifest.yaml
+    to: /
