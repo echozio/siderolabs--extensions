@@ -1,0 +1,16 @@
+name: wpa_supplicant
+depends:
+  - configuration: true
+container:
+  entrypoint: /usr/local/bin/wpa_supplicant
+  environment: []
+  security:
+    writeableRootfs: false
+    writeableSysfs: true
+  mounts:
+    - source: /lib
+      destination: /lib
+      type: bind
+      options:
+        - bind
+        - ro

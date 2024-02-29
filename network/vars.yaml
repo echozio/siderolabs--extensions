@@ -1,2 +1,6 @@
 # renovate: datasource=github-releases extractVersion=^v(?<version>.*)$ depName=tailscale/tailscale
 TAILSCALE_VERSION: 1.60.0
+
+WPA_SUPPLICANT_VERSION: 2.10
+
+LIBNL_VERSION: 3.9.0

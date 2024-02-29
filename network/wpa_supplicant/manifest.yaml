@@ -1,0 +1,10 @@
+version: v1alpha1
+metadata:
+  name: wpa_supplicant
+  version: "$VERSION"
+  author: Stafftastic
+  description: |
+    wpa_supplicant
+  compatibility:
+    talos:
+      version: ">= v1.0.0"

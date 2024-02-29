@@ -1,0 +1,39 @@
+name: wpa_supplicant
+variant: scratch
+shell: /toolchain/bin/bash
+dependencies:
+  - stage: base
+  - stage: libnl
+  - image: "{{ .BUILD_ARG_PKGS_PREFIX }}/openssl:{{ .BUILD_ARG_PKGS }}"
+steps:
+  - sources:
+      - url: https://w1.fi/releases/wpa_supplicant-{{ .WPA_SUPPLICANT_VERSION }}.tar.gz
+        destination: wpa_supplicant.tar.gz
+        sha256: 20df7ae5154b3830355f8ab4269123a87affdea59fe74fe9292a91d0d7e17b2f
+        sha512: 021c2a48f45d39c1dc6557730be5debaee071bc0ff82a271638beee6e32314e353e49d39e2f0dc8dff6e094dcc7008cfe1c32d0c7a34a1a345a12a3f1c1e11a1
+    prepare:
+      - |
+        sed -i 's#$VERSION#{{ .VERSION }}#' /pkg/manifest.yaml
+      - |
+        tar -xf wpa_supplicant.tar.gz --strip-components=1
+        rm wpa_supplicant.tar.gz
+      - |
+        cd wpa_supplicant
+        cp defconfig .config
+        sed -i 's/^CONFIG_CTRL_IFACE_DBUS_NEW=.*$//' .config
+        sed -i 's/^CONFIG_CTRL_IFACE_DBUS_INTRO=.*$//' .config
+    build:
+      - |
+        cd wpa_supplicant
+        make -j $(nproc)
+    install:
+      - |
+        cd wpa_supplicant
+        make DESTDIR=/rootfs install
+finalize:
+  - from: /rootfs
+    to: /rootfs
+  - from: /pkg/manifest.yaml
+    to: /
+  - from: /pkg/wpa_supplicant.yaml
+    to: /rootfs/usr/local/etc/containers/

@@ -1,0 +1,25 @@
+name: libnl
+variant: scratch
+shell: /toolchain/bin/bash
+dependencies:
+  - stage: base
+steps:
+  - sources:
+      - url: https://github.com/thom311/libnl/releases/download/libnl{{ regexReplaceAll "\\." .LIBNL_VERSION "_" }}/libnl-{{ .LIBNL_VERSION }}.tar.gz
+        destination: libnl.tar.gz
+        sha256: aed507004d728a5cf11eab48ca4bf9e6e1874444e33939b9d3dfed25018ee9bb
+        sha512: b6f3633d1920e61645c97f4c4c4419444e7fd66aa3b67b0a73bc29df24cf27065542a62a9c2581f90d0c153247922ce5c649b7da51c0fead6afceaf4d0361dce
+    prepare:
+      - |
+        tar -xf libnl.tar.gz --strip-components=1
+        rm libnl.tar.gz
+    build:
+      - |
+        ./configure --enable-debug=false --prefix=/usr
+        make -j $(nproc)
+    install:
+      - |
+        make DESTDIR=/rootfs install
+finalize:
+  - from: /rootfs
+    to: /

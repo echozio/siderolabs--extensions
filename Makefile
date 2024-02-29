@@ -83,6 +83,7 @@ TARGETS += util-linux-tools
 TARGETS += v4l-uvc-drivers
 TARGETS += wasmedge
 TARGETS += xe-guest-utilities
+TARGETS += wpa_supplicant
 NONFREE_TARGETS = nonfree-kmod-nvidia
 
 # extra variables
